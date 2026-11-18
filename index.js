@@ -22,16 +22,17 @@ export async function connectToMongoDB() {
   }
 
 }
-
-
 const mongoClient = await connectToMongoDB();
 //
 const db = mongoClient.db("product-db");
 const productCollection = db.collection("products");
 
-
+//ধরো, Frontend থেকে User Form Submit করেছে।
+//অর্থাৎ Frontend-কে আমরা একটা Address দিচ্ছি, যেখানে সে Product-এর Data পাঠাতে পারবে।
+//Frontend থেকে যে Data পাঠানো হয়েছে, Backend সেই Data গ্রহণ করছে।(req.body)
+//এই Data-টা আমার products Collection-এ Insert করে দাও। (database)
+//Database থেকে যে Result পেয়েছি, সেটি Backend-এর মাধ্যমে আবার Frontend-এ পাঠিয়ে দিচ্ছি।(res.send(result))
 app.post('/products',async(req,res)=>{
-  //fontend e bole diyeche body te data pathabe so
   const data = req.body
   const result = await productCollection.insertOne(data);
   console.log(result);
@@ -40,7 +41,7 @@ app.post('/products',async(req,res)=>{
   
 })
 
-// create api (kon route e gele ki pabe sheita)! (je receive korbe she ki pabe seitar method hocche get)
+//create api (kon route e gele ki pabe sheita)! (je receive korbe she ki pabe seitar method hocche get)
 //Server-এর Root URL(/)-এ GET Request পাঠাবে, তখন এই Route কাজ করবে।
 app.get('/', (req, res) => {
     res.send({msg:'Hello Backend'})
@@ -55,5 +56,4 @@ app.get('/author',(req,res)=>{
 //server hishabe kaj kore , ekta address dibe ! server ta choltache kina sheita console e dekhabe
 app.listen(PORT,()=>{
     console.log(`Server is running at ${PORT}`);
-    
 }) 
