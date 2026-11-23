@@ -1,5 +1,5 @@
 import express from 'express'
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import 'dotenv/config'
 import cors from 'cors'
 //create express application
@@ -40,6 +40,39 @@ app.post('/products',async(req,res)=>{
   res.send(result)
   
 })
+
+app.get("/products", async (req, res) => {
+  const result = await productCollection.find().toArray();
+
+  res.send(result);
+});
+
+//single product (products/id )
+app.get('/products/:id',async(req,res)=>{
+  const {id} = req.params;
+  const result = await productCollection.findOne({_id: new ObjectId(id)});
+  res.send(result)
+})
+//edit or update 
+app.patch("/products/:id", async (req, res) => {
+  const data = req.body;
+  const {id} = req.params
+
+  const result = await productCollection.updateOne(
+    {_id: new ObjectId(id)},
+    {$set: data}
+  )
+  
+  res.send(result);
+});
+//delete api
+app.delete('/products/:id', async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await productCollection.deleteOne(query);
+  res.send(result);
+});
+
 
 //create api (kon route e gele ki pabe sheita)! (je receive korbe she ki pabe seitar method hocche get)
 //Server-এর Root URL(/)-এ GET Request পাঠাবে, তখন এই Route কাজ করবে।
